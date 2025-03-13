@@ -24,3 +24,19 @@ body {
   color: var(--foreground);
   font-family: 'Arial', sans-serif;
 }
+
+/* Ensure cards are aligned properly */
+.card {
+  border-radius: 12px;
+  transition: all 0.3s ease-in-out;
+}
+.card:hover {
+  transform: scale(1.02);
+}
+
+/* Chatbot Styling */
+.chat-window {
+  max-height: 250px;
+  overflow-y: auto;
+  border-radius: 8px;
+}

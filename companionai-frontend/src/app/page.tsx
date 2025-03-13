@@ -1,88 +1,74 @@
 "use client";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { useEffect } from "react";
 import Link from "next/link";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function Home() {
-  useEffect(() => {
-    require("bootstrap/dist/js/bootstrap.bundle.min.js");
-  }, []);
-
   return (
-    <div className="d-flex flex-column min-vh-100">
-      {/* Navbar */}
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div className="container">
-          <Link className="navbar-brand fw-bold" href="/">🚀 CompanionAI</Link>
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav ms-auto">
-              <li className="nav-item">
-                <Link className="nav-link active" href="/">Home</Link>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#features">Features</a>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" href="/dashboard">Dashboard</Link>
-              </li>
-            </ul>
-            <a href="#" className="btn btn-primary ms-3">Get Started</a>
-          </div>
-        </div>
-      </nav>
+    <div className="container-fluid p-0">
+      {/* Header Section */}
+      <header className="bg-dark text-white text-center py-5">
+        <h1 className="fw-bold">CompanionAI</h1>
+        <p className="lead">Your AI-Powered Health & Wellness Assistant</p>
+        <Link href="/dashboard" className="btn btn-primary btn-lg mt-3">Get Started</Link>
+      </header>
 
-      {/* Hero Section */}
-      <section className="d-flex flex-column justify-content-center align-items-center text-center text-white bg-primary py-5">
-        <h1 className="fw-bold">Welcome to CompanionAI</h1>
-        <p className="lead">Your AI-powered health & wellness companion</p>
-        <div className="mt-3">
-          <Link className="btn btn-outline-dark" href="/dashboard">Go to Dashboard</Link>
+      {/* How It Works Section */}
+      <section className="container my-5">
+        <h2 className="text-center fw-bold">How It Works</h2>
+        <div className="row mt-4 text-center">
+          <div className="col-md-4">
+            <div className="card shadow-sm p-4 h-100">
+              <h4>🩺 AI Health Monitoring</h4>
+              <p>Track your heart rate, sleep, steps, and calories burned in real-time.</p>
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div className="card shadow-sm p-4 h-100">
+              <h4>💬 AI Chat & Therapy</h4>
+              <p>Receive emotional support and wellness guidance through AI-powered conversations.</p>
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div className="card shadow-sm p-4 h-100">
+              <h4>🚀 Personalized Insights</h4>
+              <p>Get AI-driven recommendations based on your health data and habits.</p>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-5 bg-light">
-        <div className="container text-center">
-          <h2 className="fw-bold mb-4">Key Features</h2>
-          <div className="row">
-            <div className="col-md-4">
-              <div className="card shadow-sm p-4">
-                <h4 className="fw-bold">🧠 AI Insights</h4>
-                <p>Personalized recommendations based on AI analysis.</p>
-              </div>
+      <section className="container my-5">
+        <h2 className="text-center fw-bold">Key Features</h2>
+        <div className="row mt-4 text-center">
+          <div className="col-md-4">
+            <div className="card shadow-sm p-4 h-100">
+              <h4>🌟 Gamification & Rewards</h4>
+              <p>Earn points and rewards for maintaining good health habits.</p>
             </div>
-            <div className="col-md-4">
-              <div className="card shadow-sm p-4">
-                <h4 className="fw-bold">📊 Health Tracking</h4>
-                <p>Monitor and improve your wellness effectively.</p>
-              </div>
+          </div>
+          <div className="col-md-4">
+            <div className="card shadow-sm p-4 h-100">
+              <h4>📊 AI Health Reports</h4>
+              <p>Receive weekly and monthly reports with health trends and recommendations.</p>
             </div>
-            <div className="col-md-4">
-              <div className="card shadow-sm p-4">
-                <h4 className="fw-bold">⚡ Instant Assistance</h4>
-                <p>24/7 chatbot support for your queries.</p>
-              </div>
+          </div>
+          <div className="col-md-4">
+            <div className="card shadow-sm p-4 h-100">
+              <h4>🔗 Telemedicine Integration</h4>
+              <p>Connect with doctors in real time through secure video consultations.</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-dark text-light text-center py-3 mt-auto">
-        <div className="container">
-          <p className="mb-0">© 2025 CompanionAI. All rights reserved.</p>
-        </div>
+      <footer className="bg-dark text-white text-center py-4 mt-5">
+        <p>&copy; 2025 CompanionAI. All Rights Reserved.</p>
+        <p>
+          <Link href="/privacy" className="text-white">Privacy Policy</Link> | 
+          <Link href="/terms" className="text-white"> Terms of Service</Link>
+        </p>
       </footer>
     </div>
   );
