@@ -1,15 +1,14 @@
-# Ignore compiled Python files
+# Ignore Python cache files
 __pycache__/
 *.pyc
 *.pyo
-*.pyd
 
-# Ignore virtual environment
-venv/
+# Ignore large log and build files
+*.log
+*.DS_Store
+node_modules/
 .env
 
-# Ignore log and temp files
-*.log
-*.tmp
-.DS_Store
-S
+# Ignore VSCode and IDE settings
+.vscode/
+.idea/
