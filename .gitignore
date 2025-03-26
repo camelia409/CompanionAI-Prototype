@@ -12,3 +12,6 @@ node_modules/
 # Ignore VSCode and IDE settings
 .vscode/
 .idea/
+
+# Ignore virtual environment
+companionai-backend/venv/
