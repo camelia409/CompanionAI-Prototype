@@ -14,8 +14,7 @@ fastapi_app = FastAPI()
 
 # CORS Configuration (Update frontend URL in production)
 origins = [
-    "http://localhost:3000",  # Local frontend (Next.js)
-    "https://companionai.vercel.app",  # Production frontend (Update with your actual domain)
+    "http://localhost:3000",  # Next.js Frontend
 ]
 
 fastapi_app.add_middleware(
@@ -34,6 +33,10 @@ def read_root():
 def fastapi_route():
     return {"message": "This is a FastAPI endpoint"}
 
+@fastapi_app.get("/health-check")
+def health_check():
+    return {"message": "FastAPI is running!"}
+
 # Initialize Flask
 flask_app = Flask(__name__)
 
@@ -45,9 +48,13 @@ def home():
 def flask_route():
     return jsonify({"message": "This is a Flask endpoint"})
 
+@flask_app.route("/health-check")
+def flask_health():
+    return jsonify({"message": "Flask is running!"})
+
 # Function to run FastAPI on an available port
 def run_fastapi():
-    port = 8000
+    port = 8000  # Default FastAPI port
     while True:
         try:
             uvicorn.run(fastapi_app, host="127.0.0.1", port=port, log_level="info")
@@ -56,14 +63,18 @@ def run_fastapi():
             print(f"⚠️ Port {port} in use, trying next...")
             port += 1  # Increment port and retry
 
-# Run both Flask and FastAPI
+# Function to run Flask on a fixed port
+def run_flask():
+    flask_app.run(host="127.0.0.1", port=5000, debug=False)
+
+# Main execution: Run both FastAPI and Flask
 if __name__ == "__main__":
-    # Start FastAPI first in a separate thread
+    # Start FastAPI in a separate thread
     fastapi_thread = threading.Thread(target=run_fastapi, daemon=True)
     fastapi_thread.start()
 
-    # Wait for FastAPI to initialize
+    # Allow FastAPI some time to initialize
     time.sleep(2)
 
-    # Run Flask without auto-restart to avoid port conflicts
-    flask_app.run(debug=False, port=5000)
+    # Start Flask (blocking call)
+    run_flask()
