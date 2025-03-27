@@ -44,7 +44,11 @@ export default function Home() {
             <div className="card shadow-sm p-4 h-100">
               <h4>💬 AI Chat & Therapy</h4>
               <p>Receive emotional support and wellness guidance through AI-powered conversations.</p>
+              <Link href="/chat">
+                <span className="btn btn-primary btn-lg mt-3">Try AI Chat</span>
+              </Link>
             </div>
+
           </div>
           <div className="col-md-4">
             <div className="card shadow-sm p-4 h-100">
