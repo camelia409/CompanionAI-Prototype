@@ -4,25 +4,30 @@ import { useState } from "react";
 export default function Chatbot() {
   const [messages, setMessages] = useState([{ text: "Hello! How can I help with your health?", sender: "bot" }]);
   const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!input.trim()) return;
-    
+
     const newMessages = [...messages, { text: input, sender: "user" }];
     setMessages(newMessages);
     setInput("");
+    setLoading(true);
 
-    setTimeout(() => {
-      const botResponse = generateBotResponse(input);
-      setMessages([...newMessages, { text: botResponse, sender: "bot" }]);
-    }, 1000);
-  };
+    try {
+      const response = await fetch("http://127.0.0.1:8000/ai-chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_input: input }),
+      });
 
-  const generateBotResponse = (query: string) => {
-    if (query.toLowerCase().includes("heart rate")) return "A healthy heart rate is between 60-100 bpm.";
-    if (query.toLowerCase().includes("sleep")) return "Adults need at least 7-9 hours of sleep per night.";
-    if (query.toLowerCase().includes("steps")) return "Try to walk at least 10,000 steps daily.";
-    return "I'm here to help! Please ask me about health metrics.";
+      const data = await response.json();
+      setMessages([...newMessages, { text: data.response, sender: "bot" }]);
+    } catch (error) {
+      setMessages([...newMessages, { text: "Error: Unable to connect to AI.", sender: "bot" }]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -34,6 +39,7 @@ export default function Chatbot() {
             <strong>{msg.sender === "bot" ? "Bot: " : "You: "}</strong> {msg.text}
           </div>
         ))}
+        {loading && <p className="text-muted">Typing...</p>}
       </div>
       <div className="input-group">
         <input
@@ -43,7 +49,7 @@ export default function Chatbot() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
         />
-        <button className="btn btn-primary" onClick={handleSend}>Send</button>
+        <button className="btn btn-primary" onClick={handleSend} disabled={loading}>Send</button>
       </div>
     </div>
   );
