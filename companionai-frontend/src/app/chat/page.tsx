@@ -1,11 +1,11 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { FaRobot, FaPaperPlane } from "react-icons/fa";
+import { FaRobot, FaPaperPlane, FaUser } from "react-icons/fa";
 
 export default function ChatPage() {
   const [messages, setMessages] = useState([
-    { text: "👋 Hello! I'm your **AI Companion**. How can I assist you today?", sender: "ai" },
+    { text: "Hello! I am your AI Companion. How can I assist you today?", sender: "ai" },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,7 +20,7 @@ export default function ChatPage() {
     if (!input.trim()) return;
 
     // Add user message
-    const newMessages = [...messages, { text: sanitizeText(input), sender: "user" }];
+    const newMessages = [...messages, { text: input, sender: "user" }];
     setMessages(newMessages);
     setInput("");
     setLoading(true);
@@ -40,7 +40,7 @@ export default function ChatPage() {
       const data = await response.json();
       console.log("Response received:", data);
 
-      let formattedResponse = formatResponse(data.response || "⚠️ Sorry, I couldn't process that.");
+      let formattedResponse = formatResponse(data.response || "Sorry, I couldn't process that.");
 
       setMessages([...newMessages, { text: formattedResponse, sender: "ai" }]);
     } catch (error) {
@@ -51,24 +51,20 @@ export default function ChatPage() {
     }
   };
 
-  // Function to format AI responses cleanly
+  // Function to format response text
   const formatResponse = (text: string) => {
     return text
       .replace(/\n{2,}/g, "\n") // Remove excessive blank lines
       .replace(/\n/g, "<br>") // Convert line breaks to HTML
       .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") // Convert **bold** to <strong>
       .replace(/\*(.*?)\*/g, "<em>$1</em>") // Convert *italic* to <em>
-      .replace(/^- (.*?)/gm, "✅ <strong>$1</strong>") // Convert "- Item" to bullet points
-      .replace(/Symptoms:/g, "🩺 <strong>Symptoms:</strong>") // Add emoji-based headers
+      .replace(/^- (.*?)/gm, "✅ <strong>$1</strong>") // Convert "- Item" to ✅ bullets
+      .replace(/Symptoms:/g, "🩺 <strong>Symptoms:</strong>") // Add icons to headers
       .replace(/Possible Causes:/g, "🧐 <strong>Possible Causes:</strong>")
       .replace(/What To Do:/g, "💡 <strong>What To Do:</strong>")
       .replace(/Tips:/g, "⚡ <strong>Tips:</strong>")
       .replace(/When to Seek Medical Help:/g, "🚨 <strong>When to Seek Medical Help:</strong>")
       .replace(/SEEK IMMEDIATE MEDICAL ATTENTION!/g, "<span style='color:red; font-weight:bold;'>⚠️ SEEK IMMEDIATE MEDICAL ATTENTION!</span>");
-  };
-  // Function to sanitize user input to prevent XSS
-  const sanitizeText = (text: string) => {
-    return text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
   };
 
   return (
@@ -82,18 +78,17 @@ export default function ChatPage() {
       {/* Chat Window */}
       <div className="flex-grow-1 overflow-auto p-3 bg-light rounded" style={{ maxHeight: "75vh" }}>
         {messages.map((msg, index) => (
-          <div
-            key={index}
-            className={`d-flex ${msg.sender === "user" ? "justify-content-end" : "justify-content-start"} mb-2`}
-          >
+          <div key={index} className={`d-flex mb-2 ${msg.sender === "user" ? "justify-content-end" : "justify-content-start"}`}>
+            {msg.sender === "ai" && <FaRobot size={24} className="me-2 text-primary" />}
             <div
               className={`p-3 rounded shadow-sm ${msg.sender === "user" ? "bg-primary text-white" : "bg-white"}`}
-              style={{ maxWidth: "75%" }}
-              dangerouslySetInnerHTML={{ __html: msg.text }} // ✅ Allows formatted text
+              style={{ maxWidth: "75%", borderRadius: "20px" }}
+              dangerouslySetInnerHTML={{ __html: msg.text }}
             />
+            {msg.sender === "user" && <FaUser size={24} className="ms-2 text-secondary" />}
           </div>
         ))}
-        {loading && <div className="text-muted text-center">⏳ Typing...</div>}
+        {loading && <div className="text-muted text-center">⏳ AI is typing...</div>}
         <div ref={chatEndRef} />
       </div>
 
