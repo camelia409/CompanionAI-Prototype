@@ -1,77 +1,51 @@
+import os
 import uvicorn
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from dotenv import load_dotenv, find_dotenv
 import google.generativeai as genai
+
+# Force load .env file
+dotenv_path = find_dotenv()
+if not dotenv_path:
+    raise ValueError("❌ .env file not found!")
+load_dotenv(dotenv_path)
+
+# Fetch API key
+api_key = os.getenv("GOOGLE_AI_API_KEY")
+print(f"🔹 Loaded API Key: {api_key}")
+
+if not api_key:
+    raise ValueError("❌ GOOGLE_AI_API_KEY is missing. Check your .env file.")
+
+# Configure Google AI API
+genai.configure(api_key=api_key)
 
 # Initialize FastAPI
 app = FastAPI()
 
-# Configure CORS to allow frontend requests
+# Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Frontend URL
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Configure Gemini AI API
-GENAI_API_KEY = "AIzaSyCv9jngvdp95nMJCSII_oxxNgt_p0vu47w"  # Replace with your API Key
-genai.configure(api_key=GENAI_API_KEY)
+# Import API routes (ensure symptom_routes is properly defined in symptom_checker.py)
+from app.routes.fastapi_routes import fastapi_routes
+from app.routes.symptom_checker import symptom_routes
+from app.routes.flask_routes import flask_routes
 
-# Define request model
-class ChatRequest(BaseModel):
-    user_input: str
+# Include FastAPI routes
+app.include_router(fastapi_routes, prefix="/fastapi")
+app.include_router(symptom_routes, prefix="/symptom-checker")
 
-@app.post("/ai-chat")
-async def ai_chat(request: ChatRequest):
-    """
-    Endpoint to process user input and generate AI-powered health responses.
-    Returns a structured, formatted response.
-    """
-    user_message = request.user_input
-
-    # Structured AI Prompt
-    ai_prompt = f"""
-    You are an AI health assistant. Please provide a well-structured response with:
-    - **Bold section headings** (e.g., Symptoms, What To Do, Tips, When to Seek Medical Help)
-    - **Bullet points** for easy reading.
-    - **Concise information** (max 5-7 bullet points per section).
-    - **Clear spacing** for readability.
-    - **Medical attention reminders** if the condition is serious.
-    - **Limit response to 300 words.**
-
-    **User Query:** {user_message}
-
-    **AI Response:**
-    """
-
-    try:
-        # Call Gemini AI API
-        model = genai.GenerativeModel("gemini-2.0-flash")
-        response = model.generate_content(ai_prompt)
-
-        # Format AI response for readability
-        formatted_response = format_ai_response(response.text)
-        return {"response": formatted_response}
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"AI Error: {str(e)}")
-
-def format_ai_response(text: str) -> str:
-    """
-    Formats the AI response for readability:
-    - Ensures spacing between sections
-    - Retains markdown-friendly formatting
-    """
-    formatted_text = text.replace("**", "").replace("\n", "\n\n")
-    return formatted_text
-
-@app.get("/health-check")
-def health_check():
-    """Simple health check endpoint to verify API is running."""
-    return {"message": "FastAPI is running!"}
+@app.get("/")
+async def root():
+    """Root endpoint to verify API is running."""
+    return {"message": "Welcome to CompanionAI Backend!"}
 
 # Run FastAPI Server
 if __name__ == "__main__":
