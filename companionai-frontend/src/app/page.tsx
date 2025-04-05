@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -48,7 +49,6 @@ export default function Home() {
                 <span className="btn btn-primary btn-lg mt-3">Try AI Chat</span>
               </Link>
             </div>
-
           </div>
           <div className="col-md-4">
             <div className="card shadow-sm p-4 h-100">
@@ -78,10 +78,19 @@ export default function Home() {
           <div className="col-md-4">
             <div className="card shadow-sm p-4 h-100">
               <h4>🔗 Telemedicine Integration</h4>
-              <p>Connect with doctors in real time through secure video consultations.</p>
+              <p>Connect with doctors in real-time through secure video consultations.</p>
             </div>
           </div>
         </div>
+      </section>
+
+      {/* Symptom Checker Section */}
+      <section className="container my-5 text-center">
+        <h2 className="fw-bold">🩹 Symptom Checker</h2>
+        <p>Enter your symptoms and get AI-powered health insights.</p>
+        <Link href="/symptom-checker">
+          <span className="btn btn-danger btn-lg mt-3">Check Symptoms</span>
+        </Link>
       </section>
 
       {/* Footer */}
