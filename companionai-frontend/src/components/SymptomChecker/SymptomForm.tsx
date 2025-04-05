@@ -46,32 +46,67 @@ const SymptomForm: React.FC = () => {
     }
   };
 
-  return (
-    <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg mx-auto">
-      <h2 className="text-xl font-semibold mb-4">🩺 Symptom Checker</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          value={symptoms}
-          onChange={(e) => setSymptoms(e.target.value)}
-          placeholder="Enter symptoms (e.g., fever, headache)"
-          className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
-          disabled={isLoading}
-        >
-          {isLoading ? "Checking..." : "Check Symptoms"}
-        </button>
-      </form>
+  const formatResult = (text: string) => {
+    const html = text
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*(.*?)\*/g, "<em>$1</em>")
+      .replace(/^\s*[-*] (.*)$/gm, "<li>$1</li>")
+      .replace(/\n{2,}/g, "</ul><br /><ul>")
+      .replace(/\n/g, "<br />");
+    return `<ul>${html}</ul>`;
+  };
 
-      {result && (
-        <div className="mt-4 p-4 bg-gray-100 border-l-4 border-blue-500 rounded-md">
-          <p className="font-medium">🧠 Diagnosis Result:</p>
-          <p>{result}</p>
+  return (
+    <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
+      <div
+        className="card shadow-sm p-4"
+        style={{ maxWidth: "600px", width: "100%" }}
+      >
+        <div className="card-body">
+          <h2 className="card-title text-center mb-4">🩺 Symptom Checker</h2>
+
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Enter symptoms (e.g., fever, vomiting)"
+                value={symptoms}
+                onChange={(e) => setSymptoms(e.target.value)}
+              />
+            </div>
+
+            <div className="d-grid">
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={isLoading}
+              >
+                {isLoading ? "Checking..." : "Check Symptoms"}
+              </button>
+            </div>
+          </form>
+
+          {result && (
+            <div
+              className="alert alert-info mt-4"
+              role="alert"
+              style={{
+                maxHeight: "300px",
+                overflowY: "auto",
+                whiteSpace: "normal",
+                wordWrap: "break-word",
+              }}
+            >
+              <h5 className="alert-heading">🧠 Diagnosis Result</h5>
+              <div
+                className="mt-2"
+                dangerouslySetInnerHTML={{ __html: formatResult(result) }}
+              />
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };
