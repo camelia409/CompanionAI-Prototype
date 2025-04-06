@@ -1,14 +1,22 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { FaRobot, FaPaperPlane, FaUser } from "react-icons/fa";
+import { FaRobot, FaPaperPlane, FaUser, FaUsers } from "react-icons/fa";
+
+const motivationalQuotes = [
+  "💬 “You are not alone. Take it one step at a time.”",
+  "🌼 “It's okay to feel what you're feeling.”",
+  "🧘 “Take a deep breath. You're doing your best.”",
+  "💙 “Talking helps. I’m here to listen.”",
+];
 
 export default function ChatPage() {
   const [messages, setMessages] = useState([
-    { text: "Hello! I am your AI Companion. How can I assist you today?", sender: "ai" },
+    { text: "Hi there 🌼 I'm here to listen and support you. How are you feeling today?", sender: "ai" },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [quoteIndex, setQuoteIndex] = useState(0);
   const chatEndRef = useRef<HTMLDivElement | null>(null);
 
   // Auto-scroll to latest message
@@ -16,21 +24,28 @@ export default function ChatPage() {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const sendMessage = async () => {
-    if (!input.trim()) return;
+  // Rotate motivational quotes
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setQuoteIndex((prev) => (prev + 1) % motivationalQuotes.length);
+    }, 10000); // every 10s
+    return () => clearInterval(interval);
+  }, []);
 
-    // Add user message
-    const newMessages = [...messages, { text: input, sender: "user" }];
+  const sendMessage = async (customInput?: string) => {
+    const userInput = customInput ?? input.trim();
+    if (!userInput) return;
+
+    const newMessages = [...messages, { text: userInput, sender: "user" }];
     setMessages(newMessages);
     setInput("");
     setLoading(true);
 
     try {
-      console.log("Sending message to API:", input);
       const response = await fetch("http://127.0.0.1:8000/ai-chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_input: input }),
+        body: JSON.stringify({ user_input: userInput }),
       });
 
       if (!response.ok) {
@@ -38,45 +53,48 @@ export default function ChatPage() {
       }
 
       const data = await response.json();
-      console.log("Response received:", data);
+      const formattedResponse = formatResponse(data.response || "I'm here for you, even if I don't have the perfect words right now.");
 
-      let formattedResponse = formatResponse(data.response || "Sorry, I couldn't process that.");
-
-      setMessages([...newMessages, { text: formattedResponse, sender: "ai" }]);
+      setTimeout(() => {
+        setMessages([...newMessages, { text: formattedResponse, sender: "ai" }]);
+        setLoading(false);
+      }, 1000); // Simulated delay for natural feel
     } catch (error) {
       console.error("Chat error:", error);
       setMessages([...newMessages, { text: "⚠️ Error: Unable to connect to AI.", sender: "ai" }]);
-    } finally {
       setLoading(false);
     }
   };
 
-  // Function to format response text
   const formatResponse = (text: string) => {
     return text
-      .replace(/\n{2,}/g, "\n") // Remove excessive blank lines
-      .replace(/\n/g, "<br>") // Convert line breaks to HTML
-      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") // Convert **bold** to <strong>
-      .replace(/\*(.*?)\*/g, "<em>$1</em>") // Convert *italic* to <em>
-      .replace(/^- (.*?)/gm, "✅ <strong>$1</strong>") // Convert "- Item" to ✅ bullets
-      .replace(/Symptoms:/g, "🩺 <strong>Symptoms:</strong>") // Add icons to headers
-      .replace(/Possible Causes:/g, "🧐 <strong>Possible Causes:</strong>")
-      .replace(/What To Do:/g, "💡 <strong>What To Do:</strong>")
-      .replace(/Tips:/g, "⚡ <strong>Tips:</strong>")
-      .replace(/When to Seek Medical Help:/g, "🚨 <strong>When to Seek Medical Help:</strong>")
-      .replace(/SEEK IMMEDIATE MEDICAL ATTENTION!/g, "<span style='color:red; font-weight:bold;'>⚠️ SEEK IMMEDIATE MEDICAL ATTENTION!</span>");
+      .replace(/\n{2,}/g, "\n")
+      .replace(/\n/g, "<br>")
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*(.*?)\*/g, "<em>$1</em>")
+      .replace(/^- (.*?)/gm, "✅ <strong>$1</strong>")
+      .replace(/You are not alone/g, "🤝 <strong>You are not alone</strong>")
+      .replace(/Take a deep breath/g, "🧘 <strong>Take a deep breath</strong>")
+      .replace(/It’s okay to feel this way/g, "💙 <strong>It’s okay to feel this way</strong>")
+      .replace(/Here’s what you can try:/g, "🌟 <strong>Here’s what you can try:</strong>");
   };
 
   return (
     <div className="container d-flex flex-column vh-100">
       {/* Header */}
       <div className="d-flex justify-content-between align-items-center p-3 bg-primary text-white rounded-top">
-        <h3 className="m-0">CompanionAI Chat</h3>
+        <div>
+          <h4 className="m-0">Emotional Support Chat</h4>
+          <small>Your AI Listener 🤗</small>
+        </div>
         <FaRobot size={32} className="text-white" />
       </div>
 
+      {/* Motivation Banner */}
+      <div className="alert alert-info text-center mb-0">{motivationalQuotes[quoteIndex]}</div>
+
       {/* Chat Window */}
-      <div className="flex-grow-1 overflow-auto p-3 bg-light rounded" style={{ maxHeight: "75vh" }}>
+      <div className="flex-grow-1 overflow-auto p-3 bg-light rounded" style={{ maxHeight: "70vh" }}>
         {messages.map((msg, index) => (
           <div key={index} className={`d-flex mb-2 ${msg.sender === "user" ? "justify-content-end" : "justify-content-start"}`}>
             {msg.sender === "ai" && <FaRobot size={24} className="me-2 text-primary" />}
@@ -92,6 +110,19 @@ export default function ChatPage() {
         <div ref={chatEndRef} />
       </div>
 
+      {/* Mood Quick Replies */}
+      <div className="d-flex justify-content-center flex-wrap gap-2 py-2">
+        {["😊 Feeling Good", "😟 Feeling Anxious", "😞 Feeling Sad", "😠 Feeling Angry"].map((mood) => (
+          <button
+            key={mood}
+            className="btn btn-outline-secondary btn-sm"
+            onClick={() => sendMessage(mood)}
+          >
+            {mood}
+          </button>
+        ))}
+      </div>
+
       {/* Input Box */}
       <div className="d-flex p-3 border-top bg-white">
         <input
@@ -103,9 +134,18 @@ export default function ChatPage() {
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
           autoFocus
         />
-        <button className="btn btn-primary" onClick={sendMessage} disabled={loading}>
+        <button className="btn btn-primary" onClick={() => sendMessage()} disabled={loading}>
           <FaPaperPlane />
         </button>
+      </div>
+
+      {/* Optional: Community Support */}
+      <div className="text-center py-2">
+      <button className="btn btn-link text-primary" onClick={() => window.location.href = "/community-support"}>
+        <FaUsers className="me-1" />
+        Talk to the community
+      </button>
+        
       </div>
     </div>
   );
