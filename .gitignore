@@ -18,3 +18,4 @@ node_modules/
 # Ignore virtual environment
 companionai-backend/venv/
 
+.vercel

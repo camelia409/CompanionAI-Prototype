@@ -30,7 +30,7 @@ available_models = [m.name for m in genai.list_models()]
 logging.info(f"✅ Available Gemini models: {available_models}")
 
 # Select a model manually from available ones
-MODEL_NAME = "models/gemini-1.5-pro-latest"
+MODEL_NAME = "models/gemini-1.5-flash-latest"
 if MODEL_NAME not in available_models:
     raise ValueError(f"❌ Selected model '{MODEL_NAME}' is not available! Choose from: {available_models}")
 

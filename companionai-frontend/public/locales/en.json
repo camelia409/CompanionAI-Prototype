@@ -1,0 +1,51 @@
+{
+  "nav": {
+    "companionAI": "CompanionAI",
+    "home": "Home",
+    "features": "Features",
+    "dashboard": "Dashboard",
+    "login": "Login",
+    "signup": "Sign Up",
+    "aiSupport": "AI-Powered Support",
+    "healthcare": "Smart Healthcare",
+    "community": "Community & Telemedicine"
+  },
+  "hero": {
+    "welcome": "Welcome to",
+    "companionAI": "CompanionAI",
+    "tagline": "Empowering physical, mental, and emotional wellness with AI",
+    "explore": "Explore Features"
+  },
+  "stats": {
+    "users": "Global Users",
+    "support": "Support Availability",
+    "rating": "User Rating",
+    "languages": "Supported Languages"
+  },
+  "features": {
+    "title": "Discover What CompanionAI Can Do",
+    "dashboard": "Dashboard",
+    "dashboardDesc": "Track your wellness journey in one place.",
+    "symptomChecker": "Symptom Checker",
+    "symptomCheckerDesc": "Instant AI-based health predictions.",
+    "chatbot": "AI Chatbot",
+    "chatbotDesc": "Emotional support and medical Q&A 24/7.",
+    "communitySupport": "Community Support",
+    "communitySupportDesc": "Real conversations with real people.",
+    "scheduler": "Scheduler",
+    "schedulerDesc": "Personalized healthcare reminders.",
+    "nutritionPlans": "Nutrition Plans",
+    "nutritionPlansDesc": "Customized food & fitness guidance.",
+    "telemedicine": "Telemedicine",
+    "telemedicineDesc": "Connect with certified professionals.",
+    "mindfulnessCoach": "Mindfulness Coach",
+    "mindfulnessCoachDesc": "Boost mental clarity and balance."
+  },
+  "status": {
+    "backend": "Backend Status"
+  },
+  "footer": {
+    "privacy": "Privacy",
+    "terms": "Terms"
+  }
+}
